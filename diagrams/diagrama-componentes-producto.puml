@@ -1,0 +1,46 @@
+@startuml
+title Diagrama de Componentes - PREDICT
+
+actor "Usuario" as Usuario
+
+package "Sistema Predict" {
+  [Interfaz de Usuario] as UI
+  [Dashboard] as Dashboard
+  [Configuracion del Negocio] as Negocio
+  [Indicadores Externos] as Indicadores
+  [Motor de Prediccion] as Prediccion
+  [APIs Externas] as APIs
+  [Base de Datos] as BD
+  [Seguridad y Autenticacion] as Seguridad
+}
+
+Usuario --> UI
+UI --> Dashboard
+UI --> Negocio
+Dashboard --> Indicadores
+Indicadores --> APIs
+Indicadores --> Prediccion
+Negocio --> BD
+Prediccion --> BD
+BD --> Seguridad
+@enduml
+
+database "Base de Datos" as BD
+[APIs Externas] as APIs
+
+Usuario --> Login
+Usuario --> Dashboard
+
+Login --> Auth
+Config --> Negocio
+Dashboard --> ServIndic
+VistaIndic --> ServIndic
+VistaNotif --> ServNotif
+
+Auth --> BD
+Negocio --> BD
+ServIndic --> APIs
+ServIndic --> Prediccion
+Prediccion --> BD
+ServNotif --> BD
+@enduml
