@@ -1,0 +1,54 @@
+@startuml
+title EFCT - Database Schema
+
+!theme plain
+skinparam linetype ortho
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+
+entity "bcrp_series_points" as bcrp {
+    * id : INTEGER <<PK, autoincrement>>
+    --
+    * fetched_at_utc : TEXT
+    * series_code : TEXT
+    * series_name : TEXT
+    * frequency : TEXT
+    * period : TEXT
+    * value : REAL
+}
+
+entity "weather_snapshots" as weather {
+    * id : INTEGER <<PK, autoincrement>>
+    --
+    * ts_utc : TEXT
+    * lat : REAL
+    * lon : REAL
+    rain_1h_mm : REAL
+    weather_main : TEXT
+    weather_desc : TEXT
+    temp_c : REAL
+    * raw_json : TEXT
+}
+
+entity "traffic_flow_snapshots" as traffic {
+    * id : INTEGER <<PK, autoincrement>>
+    --
+    * ts_utc : TEXT
+    * lat : REAL
+    * lon : REAL
+    current_speed_kmh : REAL
+    freeflow_speed_kmh : REAL
+    current_travel_time_s : REAL
+    freeflow_travel_time_s : REAL
+    confidence : REAL
+    * raw_json : TEXT
+}
+
+note bottom of traffic
+  Las tablas no poseen Foreign Keys físicas.
+  La correlación de datos ocurre en la capa de
+  aplicación mediante 'ts_utc' / ventanas de tiempo
+  y proximidad geográfica (lat, lon).
+end note
+
+@enduml
