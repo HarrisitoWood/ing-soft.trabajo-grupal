@@ -1,0 +1,87 @@
+@startuml "Classes: Prediction Context"
+skinparam class {
+  BackgroundColor #C7F4FF
+  BorderColor #7A1631
+  ArrowColor #7A1631
+}
+package PredictionBC {
+  package PredictionAggregate {
+    
+    class Prediction << (E,#FF7700) AggregateRoot >> {
+      - PredictionId id
+      - BusinessId businessId
+      - LocalDateTime targetDate
+      - ConfidenceLevel confidence
+      - DemandVariation demandVariation
+      + evaluateThresholds(): void
+      + isHighConfidence(): Boolean
+    }
+    
+    class PredictionId <<ValueObject>> {
+      - Long value
+    }
+    class BusinessId <<ValueObject>> {
+      - Long value
+    }
+    
+    class ConfidenceLevel <<ValueObject>> {
+      - Float score
+      + isActionable(): Boolean
+    }
+    class DemandVariation <<ValueObject>> {
+      - Float percentage
+      + indicatesSurge(): Boolean
+    }
+    
+    abstract class ExternalFactor << (E,#FF7700) Entity >> {
+      - FactorId id
+      - InformationSource source
+      - LocalDateTime capturedAt
+      + {abstract} isAnomaly(): Boolean
+    }
+    class FactorId <<ValueObject>> {
+      - Long value
+    }
+    class InformationSource <<ValueObject>> {
+      - String providerAddress
+      + isReliable(): Boolean
+    }
+    class ClimateMetric << (E,#FF7700) Entity >> {
+      - Temperature temperature
+      - Precipitation precipitation
+      - String condition
+      + isAnomaly(): Boolean
+    }
+    class TrafficFlow << (E,#FF7700) Entity >> {
+      - Float congestionLevel
+      - Float averageSpeed
+      + isAnomaly(): Boolean
+    }
+    class LocalEvent << (E,#FF7700) Entity >> {
+      - String eventName
+      - Integer estimatedAttendance
+      + isAnomaly(): Boolean
+    }
+    
+    class Temperature <<ValueObject>> {
+      - Float celsius
+    }
+    
+    class Precipitation <<ValueObject>> {
+      - Float millimeters
+    }
+  }
+}
+Prediction "1" *-- "1" PredictionId
+Prediction "1" *-- "1" BusinessId
+Prediction "1" *-- "1" ConfidenceLevel
+Prediction "1" *-- "1" DemandVariation
+Prediction "1" o-- "*" ExternalFactor
+ExternalFactor "1" *-- "1" FactorId
+ExternalFactor "1" *-- "1" InformationSource
+ExternalFactor <|-- ClimateMetric
+ExternalFactor <|-- TrafficFlow
+ExternalFactor <|-- LocalEvent
+ClimateMetric "1" *-- "1" Temperature
+ClimateMetric "1" *-- "1" Precipitation
+@enduml

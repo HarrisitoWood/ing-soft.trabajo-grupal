@@ -1,0 +1,62 @@
+@startuml "Classes: Billing & Subscription Context"
+skinparam class {
+  BackgroundColor #C7F4FF
+  BorderColor #7A1631
+  ArrowColor #7A1631
+}
+package BillingBC {
+  package PaymentAggregate {
+    
+    class Payment << (E,#FF7700) AggregateRoot >> {
+      - PaymentId id
+      - BusinessId businessId
+      - Amount amount
+      - PaymentMethod method
+      - PaymentStatus status
+      + processPayment(): void
+      + generateInvoice(): Invoice
+    }
+    
+    class PaymentId <<ValueObject>> {
+      - Long value
+    }
+    
+    class Amount <<ValueObject>> {
+      - Double value
+      - String currency
+    }
+    
+    class PaymentMethod <<ValueObject>> {
+      - String provider
+      - String token
+    }
+    
+    class Invoice << (E,#FF7700) Entity >> {
+      - InvoiceId id
+      - LocalDateTime issuedAt
+      - String pdfUrl
+      + sendToCustomer(): void
+    }
+    
+    class InvoiceId <<ValueObject>> {
+      - Long value
+    }
+    
+    enum PaymentStatus <<enum>> {
+      PENDING
+      COMPLETED
+      FAILED
+    }
+  }
+}
+package SharedBC {
+  class BusinessId <<ValueObject>>
+}
+Payment "1" *-- "1" PaymentId
+Payment "1" *-- "1" BusinessId
+Payment "1" *-- "1" Amount
+Payment "1" *-- "1" PaymentMethod
+Payment "1" *-- "0..1" Invoice
+Invoice "1" *-- "1" InvoiceId
+Payment --> PaymentStatus
+@enduml

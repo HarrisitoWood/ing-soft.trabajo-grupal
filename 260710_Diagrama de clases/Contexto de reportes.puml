@@ -1,0 +1,50 @@
+@startuml "Classes: Reporting Context"
+skinparam class {
+  BackgroundColor #C7F4FF
+  BorderColor #7A1631
+  ArrowColor #7A1631
+}
+package ReportingBC {
+  package ReportAggregate {
+    
+    class HistoricalReport << (E,#FF7700) AggregateRoot >> {
+      - ReportId id
+      - BusinessId businessId
+      - ReportType type
+      - ChartConfiguration chartConfig
+      - LocalDateTime generatedAt
+      + exportToFormat(format: ExportFormat): void
+      + renderView(): void
+    }
+    
+    class ReportId <<ValueObject>> {
+      - Long value
+    }
+    
+    class ChartConfiguration <<ValueObject>> {
+      - String xAxisLabel
+      - String yAxisLabel
+      - String chartType
+    }
+    
+    enum ReportType <<enum>> {
+      PERFORMANCE
+      PREDICTION_HISTORY
+    }
+    
+    enum ExportFormat <<enum>> {
+      PDF
+      EXCEL
+      CSV
+    }
+  }
+}
+package SharedBC {
+  class BusinessId <<ValueObject>>
+}
+HistoricalReport "1" *-- "1" ReportId
+HistoricalReport "1" *-- "1" BusinessId
+HistoricalReport "1" *-- "1" ChartConfiguration
+HistoricalReport --> ReportType
+HistoricalReport --> ExportFormat
+@enduml

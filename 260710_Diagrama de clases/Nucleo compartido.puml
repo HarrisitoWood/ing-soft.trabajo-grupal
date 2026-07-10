@@ -1,0 +1,27 @@
+@startuml "Classes: Shared Kernel Context"
+skinparam class {
+  BackgroundColor #C7F4FF
+  BorderColor #7A1631
+  ArrowColor #7A1631
+}
+package SharedBC {
+  
+  class BusinessId <<ValueObject>> {
+    - Long value
+  }
+  class UserId <<ValueObject>> {
+    - Long value
+  }
+  class Email <<ValueObject>> {
+    - String address
+    + isValidDomain(): Boolean
+  }
+  
+  class Address <<ValueObject>> {
+    - String district
+    - Double latitude
+    - Double longitude
+    + formatLocation(): String
+  }
+}
+@enduml

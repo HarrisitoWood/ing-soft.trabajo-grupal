@@ -1,0 +1,84 @@
+@startuml "Classes: Business Context"
+skinparam class {
+  BackgroundColor #C7F4FF
+  BorderColor #7A1631
+  ArrowColor #7A1631
+}
+package BusinessBC {
+  package BusinessAggregate {
+    
+    class Business << (E,#FF7700) AggregateRoot >> {
+      - BusinessId id
+      - CommercialName commercialName
+      - Configuration config
+      - Address address
+      - Subscription subscription
+      + customizeProfile(sector: Sector, address: Address, type: BusinessType): void
+      + renewSubscription(newSub: Subscription): void
+      + isReadyForAnalysis(): Boolean
+    }
+    
+    class BusinessId <<ValueObject>> {
+      - Long value
+    }
+    class CommercialName <<ValueObject>> {
+      - String value
+      + isValid(): Boolean
+    }
+    
+    class Configuration <<ValueObject>> {
+      - Sector sector
+      - BusinessType type
+    }
+    
+    class Address <<ValueObject>> {
+      - String district
+      - Double latitude
+      - Double longitude
+      + formatLocation(): String
+    }
+    class Subscription << (E,#FF7700) Entity >> {
+      - SubscriptionId id
+      - SubscriptionType type
+      - LocalDateTime startDate
+      - LocalDateTime endDate
+      - SubscriptionStatus status
+      + isActive(): Boolean
+      + cancelSubscription(): void
+    }
+    class SubscriptionId <<ValueObject>> {
+      - Long value
+    }
+    
+    enum Sector <<enum>> {
+      GASTRONOMIC
+      RETAIL
+    }
+    
+    enum BusinessType <<enum>> {
+      RESTAURANT
+      FRANCHISE
+      INDEPENDENT
+    }
+    enum SubscriptionType <<enum>> {
+      MONTHLY
+      ANNUAL
+    }
+    enum SubscriptionStatus <<enum>> {
+      ACTIVE
+      EXPIRED
+      CANCELLED
+    }
+  }
+}
+Business "1" *-- "1" BusinessId
+Business "1" *-- "1" CommercialName 
+Business "1" *-- "1" Configuration
+Business "1" *-- "1" Address
+Business "1" *-- "1" Subscription
+Subscription "1" *-- "1" SubscriptionId
+Configuration --> Sector
+Configuration --> BusinessType
+Subscription --> SubscriptionType
+Subscription --> SubscriptionStatus
+@enduml

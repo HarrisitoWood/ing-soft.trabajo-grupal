@@ -1,0 +1,84 @@
+@startuml "Classes: Notification Context"
+skinparam class {
+  BackgroundColor #C7F4FF
+  BorderColor #7A1631
+  ArrowColor #7A1631
+}
+package NotificationBC {
+  package AlertAggregate {
+    
+    class Alert << (E,#FF7700) AggregateRoot >> {
+      - AlertId id
+      - BusinessId businessId
+      - ImpactLevel impactLevel
+      - FactorType factorType
+      - AlertMessage message
+      - LocalDateTime createdAt
+      - AlertStatus status
+      - Recommendation recommendation
+      + declareAlert(): void
+      + acknowledgeByUser(): void
+      + resolveAlert(): void
+    }
+    
+    class AlertId <<ValueObject>> {
+      - Long value
+    }
+    
+    class BusinessId <<ValueObject>> {
+      - Long value
+    }
+    class FactorType <<ValueObject>> {
+      - String category
+    }
+    class AlertMessage <<ValueObject>> {
+      - String content
+      + isCriticalWarning(): Boolean
+    }
+    class Recommendation << (E,#FF7700) Entity >> {
+      - RecommendationId id
+      - ActionSuggested action
+      - CertaintyWeight weight
+      - TimeHorizon horizon
+      + isApplicable(): Boolean
+    }
+    class RecommendationId <<ValueObject>> {
+      - Long value
+    }
+    class ActionSuggested <<ValueObject>> {
+      - String description
+    }
+    class CertaintyWeight <<ValueObject>> {
+      - Float percentage
+      + isHighConfidence(): Boolean
+    }
+    
+    enum ImpactLevel <<enum>> {
+      LOW
+      MEDIUM
+      HIGH
+      CRITICAL
+    }
+    enum TimeHorizon <<enum>> {
+      SHORT_TERM
+      LONG_TERM
+    }
+    enum AlertStatus <<enum>> {
+      NEW
+      ACKNOWLEDGED
+      RESOLVED
+    }
+  }
+}
+Alert "1" *-- "1" AlertId
+Alert "1" *-- "1" BusinessId
+Alert "1" *-- "1" FactorType
+Alert "1" *-- "1" AlertMessage
+Alert "1" *-- "0..1" Recommendation
+Recommendation "1" *-- "1" RecommendationId
+Recommendation "1" *-- "1" ActionSuggested
+Recommendation "1" *-- "1" CertaintyWeight
+Alert --> ImpactLevel
+Alert --> AlertStatus
+Recommendation --> TimeHorizon
+@enduml

@@ -1,0 +1,46 @@
+@startuml "Classes: Data Ingestion Context"
+skinparam class {
+  BackgroundColor #C7F4FF
+  BorderColor #7A1631
+  ArrowColor #7A1631
+}
+package DataIngestionBC {
+  package IngestionAggregate {
+    
+    class DataIntegrationLog << (E,#FF7700) AggregateRoot >> {
+      - IntegrationId id
+      - DataProvider source
+      - SanitizedPayload payload
+      - LocalDateTime fetchedAt
+      - IngestionStatus status
+      + executeFetch(): void
+      + sanitizeData(): Boolean
+    }
+    
+    class IntegrationId <<ValueObject>> {
+      - Long value
+    }
+    
+    class DataProvider <<ValueObject>> {
+      - String connectionAddress
+      - String providerName
+      + isResponsive(): Boolean
+    }
+    
+    class SanitizedPayload <<ValueObject>> {
+      - String cleanJsonData
+      - Integer recordsProcessed
+    }
+    
+    enum IngestionStatus <<enum>> {
+      SUCCESS
+      FAILED
+      RETRYING
+    }
+  }
+}
+DataIntegrationLog "1" *-- "1" IntegrationId
+DataIntegrationLog "1" *-- "1" DataProvider
+DataIntegrationLog "1" *-- "1" SanitizedPayload
+DataIntegrationLog --> IngestionStatus
+@enduml
