@@ -1,0 +1,67 @@
+@startuml "EFCT - Database Schema Completo"
+skinparam entity {
+  BackgroundColor #C7F4FF
+  BorderColor #333333
+}
+
+title 5.5 Diagrama de Base de Datos - PREDICT
+
+entity users {
+  *id : INTEGER
+  --
+  *first_name : TEXT
+  *last_name : TEXT
+  *email : TEXT
+  *password_hash : TEXT
+  *status : TEXT
+}
+
+entity roles {
+  *id : INTEGER
+  --
+  *name : TEXT
+  description : TEXT
+}
+
+entity businesses {
+  *id : INTEGER
+  --
+  *commercial_name : TEXT
+  *sector : TEXT
+  *business_type : TEXT
+  *district : TEXT
+  latitude : REAL
+  longitude : REAL
+}
+
+entity subscriptions {
+  *id : INTEGER
+  --
+  *business_id : INTEGER
+  *type : TEXT
+  *start_date : TIMESTAMP
+  *end_date : TIMESTAMP
+  *status : TEXT
+}
+
+entity predictions {
+  *id : INTEGER
+  --
+  *business_id : INTEGER
+  *target_date : TIMESTAMP
+  *confidence_score : REAL
+  *demand_variation_percentage : REAL
+}
+
+entity alerts {
+  *id : INTEGER
+  --
+  *business_id : INTEGER
+  *impact_level : TEXT
+  *factor_type : TEXT
+  *message_content : TEXT
+  *status : TEXT
+  *created_at : TIMESTAMP
+}
+
+@enduml

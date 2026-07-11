@@ -1,0 +1,40 @@
+@startuml "Diagrama de Componentes - PREDICT"
+skinparam package {
+  BackgroundColor White
+  BorderColor #7A1631
+}
+skinparam componentStyle uml2
+
+title 5.6 Diagrama de Componentes (C3) - PREDICT
+
+package "Prediction Bounded Context (Core)" {
+  component [Interfaces] as Pred_Interfaces
+  component [Application] as Pred_Application
+  component [Domain (Agnóstico a la tecnología)] as Pred_Domain
+  component [Infrastructure (Repositories)] as Pred_Infra
+  
+  Pred_Interfaces ..> Pred_Application : "<<use>>"
+  Pred_Application ..> Pred_Domain : "<<use>>"
+  Pred_Application ..> Pred_Infra : "<<use>>"
+  Pred_Infra ..> Pred_Domain : "<<use>>"
+}
+
+package "Otros Bounded Contexts (Paquetes)" {
+  component [IAM Context] as IAM_BC
+  component [Business Context] as Business_BC
+  component [Notification Context] as Notification_BC
+  component [Billing Context] as Billing_BC
+  component [Data Ingestion Context] as Ingestion_BC
+  component [Reporting Context] as Reporting_BC
+  component [Shared Kernel] as Shared_BC
+}
+
+database "Capa de Datos" {
+  [Base de Datos PostgreSQL] as DB
+}
+
+Pred_Infra --> DB
+IAM_BC --> DB
+Notification_BC --> DB
+
+@enduml
