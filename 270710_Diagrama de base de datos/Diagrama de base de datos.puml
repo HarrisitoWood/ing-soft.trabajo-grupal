@@ -1,0 +1,155 @@
+@startuml "EFCT - Database Schema"
+skinparam class {
+  BackgroundColor #F9F9F9
+  BorderColor #333333
+  ArrowColor #7A1631
+}
+skinparam note {
+  BackgroundColor #FFFCA1
+  BorderColor #D4AF37
+}
+
+title EFCT - Database Schema
+
+class bcrp_series_points << (T,#FFAAAA) Table >> {
+  *id : INTEGER <<PK, autoincrement>>
+  *fetched_at_utc : TEXT
+  *series_code : TEXT
+  *series_name : TEXT
+  *frequency : TEXT
+  *period : TEXT
+  *value : REAL
+}
+
+class weather_snapshots << (T,#FFAAAA) Table >> {
+  *id : INTEGER <<PK, autoincrement>>
+  *ts_utc : TEXT
+  *lat : REAL
+  *lon : REAL
+  rain_1h_mm : REAL
+  weather_main : TEXT
+  weather_desc : TEXT
+  temp_c : REAL
+  *raw_json : TEXT
+}
+
+class traffic_flow_snapshots << (T,#FFAAAA) Table >> {
+  *id : INTEGER <<PK, autoincrement>>
+  *ts_utc : TEXT
+  *lat : REAL
+  *lon : REAL
+  current_speed_kmh : REAL
+  freeflow_speed_kmh : REAL
+  current_travel_time_s : REAL
+  freeflow_travel_time_s : REAL
+  confidence : REAL
+  *raw_json : TEXT
+}
+
+class users << (T,#C7F4FF) Table >> {
+  *id : BIGINT <<PK>>
+  *first_name : TEXT
+  *last_name : TEXT
+  *email : TEXT
+  *password_hash : TEXT
+  *status : TEXT
+}
+
+class roles << (T,#C7F4FF) Table >> {
+  *id : BIGINT <<PK>>
+  *name : TEXT
+  description : TEXT
+}
+
+class user_sessions << (T,#C7F4FF) Table >> {
+  *id : BIGINT <<PK>>
+  *user_id : BIGINT
+  *session_token : TEXT
+  *expiration_date : TIMESTAMP
+  *is_active : BOOLEAN
+}
+
+
+class businesses << (T,#C7F4FF) Table >> {
+  *id : BIGINT <<PK>>
+  *commercial_name : TEXT
+  *sector : TEXT
+  *business_type : TEXT
+  *district : TEXT
+  latitude : Double
+  longitude : Double
+}
+
+class subscriptions << (T,#C7F4FF) Table >> {
+  *id : BIGINT <<PK>>
+  *business_id : BIGINT
+  *type : TEXT
+  *start_date : TIMESTAMP
+  *end_date : TIMESTAMP
+  *status : TEXT
+}
+
+
+class predictions << (T,#C7F4FF) Table >> {
+  *id : BIGINT <<PK>>
+  *business_id : BIGINT
+  *target_date : TIMESTAMP
+  *confidence_score : REAL
+  *demand_variation_percentage : REAL
+}
+
+class alerts << (T,#C7F4FF) Table >> {
+  *id : BIGINT <<PK>>
+  *business_id : BIGINT
+  *impact_level : TEXT
+  *factor_type : TEXT
+  *message_content : TEXT
+  *status : TEXT
+  *created_at : TIMESTAMP
+}
+
+class recommendations << (T,#C7F4FF) Table >> {
+  *id : BIGINT <<PK>>
+  *alert_id : BIGINT
+  *action_suggested : TEXT
+  *certainty_weight : REAL
+  *time_horizon : TEXT
+}
+
+
+class payments << (T,#C7F4FF) Table >> {
+  *id : BIGINT <<PK>>
+  *business_id : BIGINT
+  *amount : REAL
+  *currency : TEXT
+  *payment_method_provider : TEXT
+  *status : TEXT
+}
+
+class invoices << (T,#C7F4FF) Table >> {
+  *id : BIGINT <<PK>>
+  *payment_id : BIGINT
+  *issued_at : TIMESTAMP
+  *pdf_url : TEXT
+}
+
+
+class historical_reports << (T,#C7F4FF) Table >> {
+  *id : BIGINT <<PK>>
+  *business_id : BIGINT
+  *report_type : TEXT
+  *chart_configuration_json : TEXT
+  *generated_at : TIMESTAMP
+}
+
+users "1" ..> "0..*" user_sessions
+businesses "1" ..> "0..*" subscriptions
+businesses "1" ..> "0..*" predictions
+businesses "1" ..> "0..*" alerts
+businesses "1" ..> "0..*" payments
+businesses "1" ..> "0..*" historical_reports
+alerts "1" ..> "0..1" recommendations
+payments "1" ..> "1" invoices
+roles "1" ..> "0..*" users
+
+@enduml
