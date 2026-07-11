@@ -1,0 +1,84 @@
+@startuml "Diagrama de Componentes - PREDICT"
+skinparam component {
+  BackgroundColor #F9F9F9
+  BorderColor #333333
+  ArrowColor #7A1631
+}
+skinparam database {
+  BackgroundColor #C7F4FF
+  BorderColor #333333
+}
+skinparam package {
+  BackgroundColor White
+  BorderColor #7A1631
+}
+
+title 5.6 Diagrama de Componentes - PREDICT
+
+actor Usuario
+
+package "Capa de Presentación (Frontend SPA)" {
+  component [Interfaz de Usuario (React)] as UI
+  component [Dashboard Widget Engine] as DashboardUI
+}
+
+package "Capa de Aplicación y Dominio (Backend API REST)" {
+  
+  package "Core Bounded Contexts" {
+    component [Prediction BC] as Prediction_BC
+    component [IAM BC] as IAM_BC
+    component [Business BC] as Business_BC
+    component [Notification BC] as Notification_BC
+  }
+
+  package "Supporting Bounded Contexts" {
+    component [Subscription BC] as Billing_BC
+    component [Data Ingestion BC] as Ingestion_BC
+    component [Reporting BC] as Reporting_BC
+  }
+  
+  package "Cross-Cutting Context" {
+    component [Shared Kernel] as Shared_BC
+  }
+}
+
+package "Sistemas Externos" {
+  component [APIs de Datos Externas\n(Weather, Economy, Traffic, Events)] as ExternalAPIs
+}
+
+database "Capa de Datos" {
+  [PostgreSQL Relational DB] as DB
+}
+
+Usuario --> UI 
+UI --> IAM_BC 
+UI --> Business_BC 
+UI --> DashboardUI 
+
+DashboardUI --> Prediction_BC 
+DashboardUI --> Notification_BC 
+DashboardUI --> Reporting_BC 
+
+IAM_BC ..> Shared_BC 
+Business_BC ..> Shared_BC 
+Prediction_BC ..> Shared_BC 
+Notification_BC ..> Shared_BC 
+Billing_BC ..> Shared_BC  
+Ingestion_BC ..> Shared_BC 
+Reporting_BC ..> Shared_BC 
+
+Prediction_BC ..> Notification_BC 
+Billing_BC ..> Business_BC 
+
+ExternalAPIs --> Ingestion_BC 
+Ingestion_BC ..> Prediction_BC 
+
+IAM_BC --> DB
+Business_BC --> DB
+Prediction_BC --> DB
+Notification_BC --> DB
+Billing_BC --> DB
+Ingestion_BC --> DB
+Reporting_BC --> DB
+
+@enduml
