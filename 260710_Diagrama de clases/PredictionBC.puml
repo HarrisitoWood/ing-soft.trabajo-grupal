@@ -1,4 +1,4 @@
-@startuml "Classes: Prediction Context"
+@startuml "Prediction BC"
 skinparam class {
   BackgroundColor #C7F4FF
   BorderColor #7A1631
@@ -18,9 +18,6 @@ package PredictionBC {
     }
     
     class PredictionId <<ValueObject>> {
-      - Long value
-    }
-    class BusinessId <<ValueObject>> {
       - Long value
     }
     
@@ -72,8 +69,13 @@ package PredictionBC {
     }
   }
 }
+
+package SharedBC {
+  class BusinessId <<ValueObject>>
+}
+
 Prediction "1" *-- "1" PredictionId
-Prediction "1" *-- "1" BusinessId
+Prediction "1" *-- "1" BusinessId : "referencia"
 Prediction "1" *-- "1" ConfidenceLevel
 Prediction "1" *-- "1" DemandVariation
 Prediction "1" o-- "*" ExternalFactor
