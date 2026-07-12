@@ -1,4 +1,4 @@
-@startuml "Capas - Prediction Context"
+@startuml "Capas - Prediction BC"
 skinparam componentStyle uml2
 skinparam package {
   BackgroundColor #F9F9F9
@@ -6,7 +6,7 @@ skinparam package {
 }
 
 
-package "Prediction Bounded Context" {
+package "Prediction BC" {
   
   component [Domain Layer\n(Prediction, ConfidenceLevel, ExternalFactor)] as Domain
   
