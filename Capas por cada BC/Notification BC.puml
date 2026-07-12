@@ -1,4 +1,4 @@
-@startuml "Capas - Notification BC"
+@startuml "Capas - NotificationBC"
 skinparam componentStyle uml2
 skinparam package {
   BackgroundColor #F9F9F9
@@ -6,7 +6,7 @@ skinparam package {
 }
 
 
-package "Notification BC" {
+package "NotificationBC" {
   
   component [Domain Layer\n(Alert & Recommendation Aggregates)] as Domain
   
