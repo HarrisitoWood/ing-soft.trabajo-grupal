@@ -1,4 +1,4 @@
-@startuml "Capas- Reporting BC"
+@startuml "Capas- ReportingBC"
 skinparam componentStyle uml2
 skinparam package {
   BackgroundColor #F9F9F9
@@ -6,7 +6,7 @@ skinparam package {
 }
 
 
-package "Reporting BC" {
+package "ReportingBC" {
   
   component [Domain Layer\n(HistoricalReport, ChartConfiguration)] as Domain
   
