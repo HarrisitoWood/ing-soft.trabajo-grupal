@@ -1,0 +1,40 @@
+@startuml "Diagrama de Componentes"
+skinparam componentStyle uml2
+skinparam package {
+  BackgroundColor White
+  BorderColor #7A1631
+}
+skinparam component {
+  BackgroundColor #C7F4FF
+  BorderColor #7A1631
+  ArrowColor #7A1631
+}
+
+package "Bounded Contexts" {
+  component [IAM_BC] as IAM
+  component [BusinessBC] as Business
+  component [PredictionBC] as Prediction
+  component [NotificationBC] as Notification
+  component [BillingBC] as Billing
+  component [DataIngestionBC] as Ingestion
+  component [ReportingBC] as Reporting
+  component [SharedBC] as Shared
+}
+
+Ingestion --> Prediction 
+Business --> Prediction 
+Prediction --> Notification
+Business --> Notification 
+Business --> Billing 
+Prediction --> Reporting 
+Business --> Reporting 
+
+IAM ..> Shared 
+Business ..> Shared 
+Prediction ..> Shared
+Notification ..> Shared 
+Billing ..> Shared
+Ingestion ..> Shared
+Reporting ..> Shared 
+
+@enduml
