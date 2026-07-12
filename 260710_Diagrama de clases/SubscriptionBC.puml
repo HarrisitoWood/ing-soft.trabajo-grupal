@@ -1,10 +1,10 @@
-@startuml "Classes: Billing & Subscription Context"
+@startuml "SubscriptionBCt"
 skinparam class {
   BackgroundColor #C7F4FF
   BorderColor #7A1631
   ArrowColor #7A1631
 }
-package BillingBC {
+package SubscriptionBC {
   package PaymentAggregate {
     
     class Payment << (E,#FF7700) AggregateRoot >> {
