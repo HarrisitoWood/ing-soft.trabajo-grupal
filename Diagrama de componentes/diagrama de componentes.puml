@@ -15,17 +15,17 @@ package "Bounded Contexts" {
   component [BusinessBC] as Business
   component [PredictionBC] as Prediction
   component [NotificationBC] as Notification
-  component [BillingBC] as Billing
-  component [DataIngestionBC] as Ingestion
+  component [SubscriptionBC] as Subscription
+  component [DataIngestionBC] as DataIngestion
   component [ReportingBC] as Reporting
   component [SharedBC] as Shared
 }
 
-Ingestion --> Prediction 
+DataIngestion --> Prediction 
 Business --> Prediction 
 Prediction --> Notification
 Business --> Notification 
-Business --> Billing 
+Business --> Subscription 
 Prediction --> Reporting 
 Business --> Reporting 
 
@@ -33,8 +33,8 @@ IAM ..> Shared
 Business ..> Shared 
 Prediction ..> Shared
 Notification ..> Shared 
-Billing ..> Shared
-Ingestion ..> Shared
+Subscription ..> Shared
+DataIngestion ..> Shared
 Reporting ..> Shared 
 
 @enduml
