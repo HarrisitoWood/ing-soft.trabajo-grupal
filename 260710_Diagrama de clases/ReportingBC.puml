@@ -1,4 +1,4 @@
-@startuml "Classes: Reporting Context"
+@startuml "ReportingBC"
 skinparam class {
   BackgroundColor #C7F4FF
   BorderColor #7A1631
