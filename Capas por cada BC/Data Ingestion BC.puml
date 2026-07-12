@@ -1,4 +1,4 @@
-@startuml "Capas - Data Ingestion BC"
+@startuml "Capas - DataIngestionBC"
 skinparam componentStyle uml2
 skinparam package {
   BackgroundColor #F9F9F9
@@ -6,7 +6,7 @@ skinparam package {
 }
 
 
-package "Data Ingestion BC" {
+package "DataIngestionBC" {
   
   component [Domain Layer\n(DataIntegrationLog, DataProvider,\nSanitizedPayload Aggregates)] as Domain
   
