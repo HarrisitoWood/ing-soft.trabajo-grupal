@@ -1,4 +1,4 @@
-@startuml "Capas - Prediction BC"
+@startuml "Capas - PredictionBC"
 skinparam componentStyle uml2
 skinparam package {
   BackgroundColor #F9F9F9
@@ -6,7 +6,7 @@ skinparam package {
 }
 
 
-package "Prediction BC" {
+package "PredictionBC" {
   
   component [Domain Layer\n(Prediction, ConfidenceLevel, ExternalFactor)] as Domain
   
@@ -22,7 +22,6 @@ package "Prediction BC" {
   Infra ..> Domain 
 }
 
-' Relaciones externas del módulo
 [Single Page Application (SPA)] ..> Interfaces : "(HTTPS/JSON)"
 Infra ..> [PostgreSQL DB] : "Persiste predicciones y métricas"
 Infra ..> [Data Ingestion BC] : "Consume factores (Clima, Eventos)"
