@@ -1,0 +1,289 @@
+@startuml "EFCT - Predict Database Schema"
+
+' =====================================================================
+' Database diagram for the final product "Predict" (EFCT project)
+' Built following the same notation/style as the base file
+' Diagrama_BD.puml (root of the repository) and using the domain
+' entities defined in each Bounded Context class diagram
+' (260710_Diagrama de clases/*.puml) as a guide.
+' =====================================================================
+
+skinparam linetype ortho
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam class {
+  BackgroundColor<<core>> #C7F4FF
+  BackgroundColor<<raw>> #FFAAAA
+  BorderColor #7A1631
+}
+
+' ---------------------------------------------------------------------
+' 1. IAM CONTEXT (Identity & Access Management)
+' ---------------------------------------------------------------------
+package "IAM Schema" {
+
+  entity "users" as users <<core>> {
+    * id : BIGINT <<PK, autoincrement>>
+    --
+    * first_name : TEXT
+    * last_name : TEXT
+    * email : TEXT <<unique>>
+    * password_hash : TEXT
+    * status : TEXT
+  }
+
+  entity "roles" as roles <<core>> {
+    * id : BIGINT <<PK, autoincrement>>
+    --
+    * name : TEXT <<unique>>
+    description : TEXT
+  }
+
+  entity "user_roles" as user_roles <<core>> {
+    * user_id : BIGINT <<PK, FK>>
+    * role_id : BIGINT <<PK, FK>>
+  }
+
+  entity "user_sessions" as user_sessions <<core>> {
+    * id : BIGINT <<PK, autoincrement>>
+    --
+    * user_id : BIGINT <<FK>>
+    * session_token : TEXT
+    * expiration_date : TIMESTAMP
+    * is_active : BOOLEAN
+  }
+}
+
+' ---------------------------------------------------------------------
+' 2. BUSINESS CONTEXT
+' ---------------------------------------------------------------------
+package "Business Schema" {
+
+  entity "businesses" as businesses <<core>> {
+    * id : BIGINT <<PK, autoincrement>>
+    --
+    * commercial_name : TEXT
+    * sector : TEXT
+    * business_type : TEXT
+    * district : TEXT
+    latitude : DOUBLE
+    longitude : DOUBLE
+  }
+
+  entity "subscriptions" as subscriptions <<core>> {
+    * id : BIGINT <<PK, autoincrement>>
+    --
+    * business_id : BIGINT <<FK>>
+    * type : TEXT
+    * start_date : TIMESTAMP
+    * end_date : TIMESTAMP
+    * status : TEXT
+  }
+}
+
+' ---------------------------------------------------------------------
+' 3. DATA INGESTION CONTEXT (external raw data)
+' ---------------------------------------------------------------------
+package "Data Ingestion Schema" {
+
+  entity "data_integration_logs" as data_integration_logs <<raw>> {
+    * id : INTEGER <<PK, autoincrement>>
+    --
+    * provider_name : TEXT
+    * connection_address : TEXT
+    * fetched_at_utc : TEXT
+    * records_processed : INTEGER
+    * status : TEXT
+    * clean_json_data : TEXT
+  }
+
+  entity "bcrp_series_points" as bcrp <<raw>> {
+    * id : INTEGER <<PK, autoincrement>>
+    --
+    * fetched_at_utc : TEXT
+    * series_code : TEXT
+    * series_name : TEXT
+    * frequency : TEXT
+    * period : TEXT
+    * value : REAL
+  }
+
+  entity "weather_snapshots" as weather <<raw>> {
+    * id : INTEGER <<PK, autoincrement>>
+    --
+    * ts_utc : TEXT
+    * lat : REAL
+    * lon : REAL
+    rain_1h_mm : REAL
+    weather_main : TEXT
+    weather_desc : TEXT
+    temp_c : REAL
+    * raw_json : TEXT
+  }
+
+  entity "traffic_flow_snapshots" as traffic <<raw>> {
+    * id : INTEGER <<PK, autoincrement>>
+    --
+    * ts_utc : TEXT
+    * lat : REAL
+    * lon : REAL
+    current_speed_kmh : REAL
+    freeflow_speed_kmh : REAL
+    current_travel_time_s : REAL
+    freeflow_travel_time_s : REAL
+    confidence : REAL
+    * raw_json : TEXT
+  }
+
+  note bottom of traffic
+    These tables do not have physical Foreign Keys.
+    Data correlation happens at the application layer
+    through 'ts_utc' / time windows and geographic
+    proximity (lat, lon), as required by the
+    Domain-Driven Design architecture.
+  end note
+}
+
+' ---------------------------------------------------------------------
+' 4. PREDICTION CONTEXT
+' ---------------------------------------------------------------------
+package "Prediction Schema" {
+
+  entity "predictions" as predictions <<core>> {
+    * id : BIGINT <<PK, autoincrement>>
+    --
+    * business_id : BIGINT <<FK>>
+    * target_date : TIMESTAMP
+    * confidence_score : REAL
+    * demand_variation_percentage : REAL
+  }
+
+  entity "external_factors" as external_factors <<core>> {
+    * id : BIGINT <<PK, autoincrement>>
+    --
+    * prediction_id : BIGINT <<FK>>
+    * factor_type : TEXT
+    * information_source : TEXT
+    * captured_at : TIMESTAMP
+  }
+
+  entity "climate_metrics" as climate_metrics <<core>> {
+    * external_factor_id : BIGINT <<PK, FK>>
+    --
+    * temperature_celsius : REAL
+    * precipitation_mm : REAL
+    condition : TEXT
+  }
+
+  entity "traffic_flows" as traffic_flows <<core>> {
+    * external_factor_id : BIGINT <<PK, FK>>
+    --
+    * congestion_level : REAL
+    * average_speed : REAL
+  }
+
+  entity "local_events" as local_events <<core>> {
+    * external_factor_id : BIGINT <<PK, FK>>
+    --
+    * event_name : TEXT
+    estimated_attendance : INTEGER
+  }
+
+  note bottom of external_factors
+    Table-per-subclass inheritance for the
+    ExternalFactor hierarchy (ClimateMetric,
+    TrafficFlow, LocalEvent), consistent with
+    the Prediction Bounded Context class diagram.
+  end note
+}
+
+' ---------------------------------------------------------------------
+' 5. NOTIFICATION CONTEXT
+' ---------------------------------------------------------------------
+package "Notification Schema" {
+
+  entity "alerts" as alerts <<core>> {
+    * id : BIGINT <<PK, autoincrement>>
+    --
+    * business_id : BIGINT <<FK>>
+    * impact_level : TEXT
+    * factor_type : TEXT
+    * message_content : TEXT
+    * status : TEXT
+    * created_at : TIMESTAMP
+  }
+
+  entity "recommendations" as recommendations <<core>> {
+    * id : BIGINT <<PK, autoincrement>>
+    --
+    * alert_id : BIGINT <<FK>>
+    * action_suggested : TEXT
+    * certainty_weight : REAL
+    * time_horizon : TEXT
+  }
+}
+
+' ---------------------------------------------------------------------
+' 6. BILLING & SUBSCRIPTION CONTEXT
+' ---------------------------------------------------------------------
+package "Billing Schema" {
+
+  entity "payments" as payments <<core>> {
+    * id : BIGINT <<PK, autoincrement>>
+    --
+    * business_id : BIGINT <<FK>>
+    * amount : REAL
+    * currency : TEXT
+    * payment_method_provider : TEXT
+    * status : TEXT
+  }
+
+  entity "invoices" as invoices <<core>> {
+    * id : BIGINT <<PK, autoincrement>>
+    --
+    * payment_id : BIGINT <<FK>>
+    * issued_at : TIMESTAMP
+    * pdf_url : TEXT
+  }
+}
+
+' ---------------------------------------------------------------------
+' 7. REPORTING CONTEXT
+' ---------------------------------------------------------------------
+package "Reporting Schema" {
+
+  entity "historical_reports" as historical_reports <<core>> {
+    * id : BIGINT <<PK, autoincrement>>
+    --
+    * business_id : BIGINT <<FK>>
+    * report_type : TEXT
+    * x_axis_label : TEXT
+    * y_axis_label : TEXT
+    * chart_type : TEXT
+    * generated_at : TIMESTAMP
+  }
+}
+
+' =====================================================================
+' RELATIONSHIPS
+' =====================================================================
+
+roles       ||--o{ user_roles          : "is assigned to"
+users       ||--o{ user_roles          : "has"
+users       ||--o{ user_sessions       : "opens"
+
+businesses  ||--o{ subscriptions       : "contracts"
+businesses  ||--o{ predictions         : "requests"
+businesses  ||--o{ alerts              : "receives"
+businesses  ||--o{ payments            : "generates"
+businesses  ||--o{ historical_reports  : "views"
+
+predictions ||--o{ external_factors    : "is based on"
+external_factors ||--o| climate_metrics : "specializes as"
+external_factors ||--o| traffic_flows   : "specializes as"
+external_factors ||--o| local_events    : "specializes as"
+
+alerts      ||--o| recommendations     : "suggests"
+payments    ||--o| invoices            : "issues"
+
+@enduml
