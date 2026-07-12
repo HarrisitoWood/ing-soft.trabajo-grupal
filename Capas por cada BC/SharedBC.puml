@@ -1,4 +1,4 @@
-@startuml "Capas - Shared Kernel Context"
+@startuml "Capas - SharedBC"
 skinparam componentStyle uml2
 skinparam package {
   BackgroundColor #F9F9F9
@@ -6,7 +6,7 @@ skinparam package {
 }
 
 
-package "Shared Kernel Bounded Context" {
+package "SharedBC" {
   
   component [Domain Layer\n(Shared Value Objects: BusinessId, UserId, Email)] as Domain
   
