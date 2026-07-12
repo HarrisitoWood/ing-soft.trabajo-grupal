@@ -1,4 +1,4 @@
-@startuml "Business BC"
+@startuml "BusinessBC"
 skinparam class {
   BackgroundColor #C7F4FF
   BorderColor #7A1631
