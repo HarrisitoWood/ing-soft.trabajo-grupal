@@ -1,4 +1,4 @@
-@startuml "Capas - Business BC"
+@startuml "Capas - BusinessBC"
 skinparam componentStyle uml2
 skinparam package {
   BackgroundColor #F9F9F9
@@ -6,7 +6,7 @@ skinparam package {
 }
 
 
-package "Business BC" {
+package "BusinessBC" {
   
   component [Domain Layer\n(Business, Configuration, Address Aggregates)] as Domain
   
