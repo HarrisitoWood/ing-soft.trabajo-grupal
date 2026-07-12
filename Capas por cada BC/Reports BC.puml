@@ -1,0 +1,28 @@
+@startuml "Capas- Reporting Context"
+skinparam componentStyle uml2
+skinparam package {
+  BackgroundColor #F9F9F9
+  BorderColor #7A1631
+}
+
+
+package "Reporting Bounded Context" {
+  
+  component [Domain Layer\n(HistoricalReport, ChartConfiguration)] as Domain
+  
+  component [Application Layer\n(Report Generation Services)] as Application
+
+  component [Interfaces Layer\n(Report Export Controllers)] as Interfaces
+
+  component [Infrastructure Layer\n(Report Repositories, PDF/CSV Adapters)] as Infra
+
+  Interfaces ..> Application 
+  Application ..> Domain 
+  Application ..> Infra
+  Infra ..> Domain
+}
+
+[Single Page Application (SPA)] ..> Interfaces : "Solicita descargar reportes (HTTPS)"
+Infra ..> [PostgreSQL DB] : "Consulta vistas materializadas y logs"
+
+@enduml

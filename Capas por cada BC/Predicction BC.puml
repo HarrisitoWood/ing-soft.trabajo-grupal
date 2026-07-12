@@ -1,0 +1,30 @@
+@startuml "Capas - Prediction Context"
+skinparam componentStyle uml2
+skinparam package {
+  BackgroundColor #F9F9F9
+  BorderColor #7A1631
+}
+
+
+package "Prediction Bounded Context" {
+  
+  component [Domain Layer\n(Prediction, ConfidenceLevel, ExternalFactor)] as Domain
+  
+  component [Application Layer\n(Prediction Command & Query Services)] as Application
+
+  component [Interfaces Layer\n(Prediction REST Controllers)] as Interfaces
+
+  component [Infrastructure Layer\n(Prediction JPA Repositories)] as Infra
+
+  Interfaces ..> Application 
+  Application ..> Domain 
+  Application ..> Infra 
+  Infra ..> Domain 
+}
+
+' Relaciones externas del módulo
+[Single Page Application (SPA)] ..> Interfaces : "(HTTPS/JSON)"
+Infra ..> [PostgreSQL DB] : "Persiste predicciones y métricas"
+Infra ..> [Data Ingestion BC] : "Consume factores (Clima, Eventos)"
+
+@enduml

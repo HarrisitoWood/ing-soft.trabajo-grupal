@@ -1,0 +1,29 @@
+@startuml "5Capas - Billing Context"
+skinparam componentStyle uml2
+skinparam package {
+  BackgroundColor #F9F9F9
+  BorderColor #7A1631
+}
+
+
+package "Billing & Subscription Bounded Context" {
+  
+  component [Domain Layer\n(Payment, Invoice Aggregates)] as Domain
+  
+  component [Application Layer\n(Billing & Subscription Services)] as Application
+
+  component [Interfaces Layer\n(Payment & Invoice Controllers)] as Interfaces
+
+  component [Infrastructure Layer\n(Payment Gateways, Repositories)] as Infra
+
+  Interfaces ..> Application 
+  Application ..> Domain  
+  Application ..> Infra 
+  Infra ..> Domain
+}
+
+[Single Page Application (SPA)] ..> Interfaces : "Gestiona planes y pagos (HTTPS)"
+Infra ..> [PostgreSQL DB] : "Persiste transacciones y comprobantes"
+Infra ..> [Pasarela de Pagos (Stripe)] : "Procesa cobros mediante Sandbox"
+
+@enduml

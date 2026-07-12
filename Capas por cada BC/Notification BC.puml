@@ -1,0 +1,29 @@
+@startuml "Capas - Notification Context"
+skinparam componentStyle uml2
+skinparam package {
+  BackgroundColor #F9F9F9
+  BorderColor #7A1631
+}
+
+
+package "Notification Bounded Context" {
+  
+  component [Domain Layer\n(Alert & Recommendation Aggregates)] as Domain
+  
+  component [Application Layer\n(Notification Command & Query Services)] as Application
+
+  component [Interfaces Layer\n(Alert REST Controllers / Event Listeners)] as Interfaces
+
+  component [Infrastructure Layer\n(Alert Repositories, Email/SMS Adapters)] as Infra
+
+  Interfaces ..> Application 
+  Application ..> Domain 
+  Application ..> Infra
+  Infra ..> Domain
+}
+
+' Relaciones externas del módulo
+[Single Page Application (SPA)] ..> Interfaces : "Consulta alertas recientes (HTTPS)"
+[Prediction Bounded Context] ..> Interfaces : "Envía evento de umbral superado"
+Infra ..> [PostgreSQL DB] : "Persiste historial de alertas"
+Infra ..> [Servicio de Correo (SendGrid)] : "Despacha notificaciones push/email"

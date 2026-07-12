@@ -1,0 +1,27 @@
+@startuml "Capas - Shared Kernel Context"
+skinparam componentStyle uml2
+skinparam package {
+  BackgroundColor #F9F9F9
+  BorderColor #7A1631
+}
+
+
+package "Shared Kernel Bounded Context" {
+  
+  component [Domain Layer\n(Shared Value Objects: BusinessId, UserId, Email)] as Domain
+  
+  component [Application Layer\n(Common Services)] as Application
+
+  component [Interfaces Layer\n(Shared Library Exports)] as Interfaces
+
+  component [Infrastructure Layer\n(Common Framework Utils)] as Infra
+
+  Interfaces ..> Application
+  Application ..> Domain 
+  Application ..> Infra
+  Infra ..> Domain
+}
+
+[Todos los Core & Supporting BCs] ..> Interfaces : "Importan IDs y Objetos de Valor"
+
+@enduml

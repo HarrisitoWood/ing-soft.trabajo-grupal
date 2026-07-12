@@ -1,0 +1,27 @@
+@startuml "Capas - Business Context"
+skinparam componentStyle uml2
+skinparam package {
+  BackgroundColor #F9F9F9
+  BorderColor #7A1631
+}
+
+
+package "Business Bounded Context" {
+  
+  component [Domain Layer\n(Business, Configuration, Address Aggregates)] as Domain
+  
+  component [Application Layer\n(Business Profile Services)] as Application
+
+  component [Interfaces Layer\n(Business REST Controllers)] as Interfaces
+
+  component [Infrastructure Layer\n(Business Repositories)] as Infra
+
+  Interfaces ..> Application 
+  Application ..> Domain 
+  Application ..> Infra 
+  Infra ..> Domain
+}
+[Single Page Application (SPA)] ..> Interfaces : "Configura perfil del restaurante (HTTPS)"
+Infra ..> [PostgreSQL DB] : "Persiste configuración de negocio"
+
+@enduml

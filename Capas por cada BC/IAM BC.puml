@@ -1,0 +1,24 @@
+@startuml "Capas - IAM Context"
+skinparam componentStyle uml2
+skinparam package {
+  BackgroundColor #F9F9F9
+  BorderColor #7A1631
+}
+
+
+package "IAM Bounded Context" {
+  
+  component [Interfaces Layer\n(Auth REST Controllers)] as Interfaces
+  component [Application Layer\n(Auth & Token Services)] as Application
+  component [Domain Layer\n(User, Role, Session Aggregates)] as Domain
+  component [Infrastructure Layer\n(User Repositories, JWT Adapters)] as Infra
+
+  Interfaces ..> Application 
+  Application ..> Domain 
+  Application ..> Infra
+  Infra ..> Domain
+}
+
+[Single Page Application (SPA)] ..> Interfaces : "Login / Token (HTTPS)"
+Infra ..> [PostgreSQL DB] : "Persiste credenciales"
+@enduml

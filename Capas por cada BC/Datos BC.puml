@@ -1,0 +1,30 @@
+Copia y pega este código exacto para tu Figura 5.6.2.6:
+@startuml "Capas - Data Ingestion Context"
+skinparam componentStyle uml2
+skinparam package {
+  BackgroundColor #F9F9F9
+  BorderColor #7A1631
+}
+
+
+package "Data Ingestion Bounded Context" {
+  
+  component [Domain Layer\n(DataIntegrationLog, DataProvider,\nSanitizedPayload Aggregates)] as Domain
+  
+  component [Application Layer\n(Data Fetching & Integration Services)] as Application
+
+  component [Interfaces Layer\n(Ingestion Controllers / Schedulers)] as Interfaces
+
+  component [Infrastructure Layer\n(External API Adapters, Repositories)] as Infra
+
+  Interfaces ..> Application 
+  Application ..> Domain 
+  Application ..> Infra 
+  Infra ..> Domain 
+}
+
+[Prediction Bounded Context] ..> Interfaces : "Solicita datos estructurados"
+Infra ..> [APIs Externas (Weather, Economy, Traffic, Events)] : "Consume datos crudos (JSON)"
+Infra ..> [PostgreSQL DB] : "Persiste logs y snapshots"
+
+@enduml
