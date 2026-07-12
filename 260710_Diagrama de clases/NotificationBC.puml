@@ -1,4 +1,4 @@
-@startuml "Classes: Notification Context"
+@startuml "NotificationBC"
 skinparam class {
   BackgroundColor #C7F4FF
   BorderColor #7A1631
@@ -25,9 +25,6 @@ package NotificationBC {
       - Long value
     }
     
-    class BusinessId <<ValueObject>> {
-      - Long value
-    }
     class FactorType <<ValueObject>> {
       - String category
     }
@@ -70,8 +67,13 @@ package NotificationBC {
     }
   }
 }
+
+package SharedBC {
+  class BusinessId <<ValueObject>>
+}
+
 Alert "1" *-- "1" AlertId
-Alert "1" *-- "1" BusinessId
+Alert "1" *-- "1" BusinessId : "referencia"
 Alert "1" *-- "1" FactorType
 Alert "1" *-- "1" AlertMessage
 Alert "1" *-- "0..1" Recommendation
