@@ -1,4 +1,4 @@
-@startuml "5Capas - Billing Context"
+@startuml "Capas - SubscriptionBC"
 skinparam componentStyle uml2
 skinparam package {
   BackgroundColor #F9F9F9
@@ -6,7 +6,7 @@ skinparam package {
 }
 
 
-package "Billing & Subscription Bounded Context" {
+package "SubscriptionBC" {
   
   component [Domain Layer\n(Payment, Invoice Aggregates)] as Domain
   
