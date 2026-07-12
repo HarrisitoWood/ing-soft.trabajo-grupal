@@ -1,4 +1,4 @@
-@startuml "Classes: Business Context"
+@startuml "Business BC"
 skinparam class {
   BackgroundColor #C7F4FF
   BorderColor #7A1631
@@ -18,9 +18,6 @@ package BusinessBC {
       + isReadyForAnalysis(): Boolean
     }
     
-    class BusinessId <<ValueObject>> {
-      - Long value
-    }
     class CommercialName <<ValueObject>> {
       - String value
       + isValid(): Boolean
@@ -31,12 +28,6 @@ package BusinessBC {
       - BusinessType type
     }
     
-    class Address <<ValueObject>> {
-      - String district
-      - Double latitude
-      - Double longitude
-      + formatLocation(): String
-    }
     class Subscription << (E,#FF7700) Entity >> {
       - SubscriptionId id
       - SubscriptionType type
@@ -71,10 +62,16 @@ package BusinessBC {
     }
   }
 }
-Business "1" *-- "1" BusinessId
+
+package SharedBC {
+  class BusinessId <<ValueObject>>
+  class Address <<ValueObject>>
+}
+
+Business "1" *-- "1" BusinessId : "referencia"
 Business "1" *-- "1" CommercialName 
 Business "1" *-- "1" Configuration
-Business "1" *-- "1" Address
+Business "1" *-- "1" Address : "referencia"
 Business "1" *-- "1" Subscription
 Subscription "1" *-- "1" SubscriptionId
 Configuration --> Sector
