@@ -1,4 +1,4 @@
-@startuml "Capas - IAM Context"
+@startuml "Capas - IAM_BC"
 skinparam componentStyle uml2
 skinparam package {
   BackgroundColor #F9F9F9
@@ -6,7 +6,7 @@ skinparam package {
 }
 
 
-package "IAM Bounded Context" {
+package "IAM_BC" {
   
   component [Interfaces Layer\n(Auth REST Controllers)] as Interfaces
   component [Application Layer\n(Auth & Token Services)] as Application
