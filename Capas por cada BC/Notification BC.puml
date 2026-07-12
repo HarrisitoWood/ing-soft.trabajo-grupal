@@ -1,4 +1,4 @@
-@startuml "Capas - Notification Context"
+@startuml "Capas - Notification BC"
 skinparam componentStyle uml2
 skinparam package {
   BackgroundColor #F9F9F9
@@ -6,7 +6,7 @@ skinparam package {
 }
 
 
-package "Notification Bounded Context" {
+package "Notification BC" {
   
   component [Domain Layer\n(Alert & Recommendation Aggregates)] as Domain
   
@@ -22,8 +22,9 @@ package "Notification Bounded Context" {
   Infra ..> Domain
 }
 
-' Relaciones externas del módulo
 [Single Page Application (SPA)] ..> Interfaces : "Consulta alertas recientes (HTTPS)"
 [Prediction Bounded Context] ..> Interfaces : "Envía evento de umbral superado"
 Infra ..> [PostgreSQL DB] : "Persiste historial de alertas"
 Infra ..> [Servicio de Correo (SendGrid)] : "Despacha notificaciones push/email"
+
+@enduml
