@@ -1,4 +1,4 @@
-@startuml "Clases: Identity Access Management Context (IAM)"
+@startuml "IAM_BC"
 skinparam class {
   BackgroundColor #C7F4FF
   BorderColor #7A1631
@@ -20,19 +20,12 @@ package IAM_BC {
       + isSuspended(): Boolean
     }
     
-    class UserId <<ValueObject>> {
-      - Long value
-    }
     class UserName <<ValueObject>> {
       - String firstName
       - String lastName
       + getFullName(): String
     }
     
-    class Email <<ValueObject>> {
-      - String address
-      + isValidDomain(): Boolean
-    }
     class PasswordHash <<ValueObject>> {
       - String hashValue
     }
@@ -65,11 +58,17 @@ package IAM_BC {
     }
   }
 }
+
+package SharedBC {
+  class UserId <<ValueObject>>
+  class Email <<ValueObject>>
+}
+
 User "1" *-- "0..*" Session
 User "1" o-- "1..*" Role
-User "1" *-- "1" UserId
+User "1" *-- "1" UserId : "referencia"
 User "1" *-- "1" UserName
-User "1" *-- "1" Email
+User "1" *-- "1" Email : "referencia"
 User "1" *-- "1" PasswordHash
 Session "1" *-- "1" SessionId
 Role "1" *-- "1" RoleId
